@@ -15,7 +15,7 @@ MAIN: {
       if $temperature.defined {
         say "Temperature: id=" ~ $sensor.id ~ ": temp=$temperature"
       } else {
-        die "ERROR: Temperature reading not avaialable"
+        say "ERROR: Temperature reading not avaialable"
       }
     }
   }
