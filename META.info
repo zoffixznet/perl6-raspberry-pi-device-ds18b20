@@ -1,7 +1,7 @@
 {
     "name" : "RPi::Device::DS18B20",
     "version" : "0.1.0",
-    "description" : "RPi::Device::DS18B20 provides support for the DS18B20 family of temperature sensors.
+    "description" : "RPi::Device::DS18B20 provides support for the DS18B20 family of temperature sensors.",
     "author" : "Cory Spencer",
     "provides" : {
         "RPi::Device::DS18B20"         : "lib/RPi/Device/DS18B20.pm6",
