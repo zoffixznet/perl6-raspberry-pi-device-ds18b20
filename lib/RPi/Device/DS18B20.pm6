@@ -22,7 +22,7 @@ RPi::Device::DS18B20 provides support for the DS18B20 family of temperature sens
           # Get a temperature reading from the sensor.
           my $temp = $sensor.read();
     
-          # If we were able to read a temperature, the result with be defined -
+          # If we were able to read a temperature, the result will be defined -
           # .read() will return Nil if the sensor was not able to provide a
           # temperature value.
           say "Temperature is: $temp" ~ $sensor.units()
