@@ -12,10 +12,11 @@ MAIN: {
       # 5 seconds.
       my $temperature = $sensor.read();
 
-      die "ERROR: Temperature reading not avaialable" if ! $temperature.defined;
-      
-      say "Temperature: id=" ~ $sensor.id ~ ": temp=$temperature"
-        if $temperature.defined;            
+      if $temperature.defined {
+        say "Temperature: id=" ~ $sensor.id ~ ": temp=$temperature"
+      } else {
+        die "ERROR: Temperature reading not avaialable"
+      }
     }
   }
 }
