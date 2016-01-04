@@ -11,7 +11,9 @@ RPi::Device::DS18B20::Sensor is not intended to be instantiated directly.  Inste
 =head1 METHODS
 
 =item method read() returns Rat - Returns a temperature reading from the sensor.  By default, all temperatures are provided in degrees Celsius.  To convert the temperature to degrees Fahrenheit, set the units attribute to F
-  
+
+=item method interval(Numeric $interval, Numeric $delay = 0) returns Supply - Returns a live Supply that will emit a new temperature reading every $interval seconds.  If specified, the Supply will wait $delay seconds before emitting the first reading.
+
 =head1 ATTRIBUTES
 
 =item units - Controls whether temperature readings are provided in degrees Celsius or degrees Fahrenheit.  Set to C for Celsius (the default) and F for Fahrenheit.
@@ -77,5 +79,27 @@ class RPi::Device::DS18B20::Sensor {
 
   method convert-to-fahrenheit(Rat $temp) returns Rat {
     return ($temp * 1.8) + 32
+  }
+
+  method interval(Numeric $interval where { $interval >= 0 },
+                  Numeric $delay    where { $delay    >= 0 } = 0)
+         returns Supply {
+    my $s = Supplier.new;
+
+    # Start a new thread to run the Supplier factory in.
+    start {
+      my $start-time = now;
+
+      loop {
+        # Emit a new temperature reading if at least $delay seconds have
+        # elapsed.
+        $s.emit(self.read()) if (now - $start-time) >= $delay;
+
+        sleep $interval;
+      }
+    }
+
+    # Return a live Supply.
+    return $s.Supply.share;
   }
 }

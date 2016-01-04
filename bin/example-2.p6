@@ -6,14 +6,18 @@ MAIN: {
   my ($sensor) = $ds18b20.detect-sensors() or
     die "ERROR: No DS18B20 sensors detected";
 
-  # Read the temperature directly from the sensor.
-  loop {
-    my $temperature = $sensor.read;
+  # Create a live Supply from the sensor that reads a new temperature every
+  # 1.5 seconds.
+  my $supply = $sensor.interval(1.5);
 
-    if $temperature.defined {
-      say "Temperature: sensor id=" ~ $sensor.id ~ ": temp=$temperature"
-    } else {
-      say "ERROR: Temperature reading not avaialable"
+  # Read the temperature from the supply in an asychronous react loop.
+  react {
+    whenever $supply -> $temperature {
+      if $temperature.defined {
+        say "Temperature: sensor id=" ~ $sensor.id ~ ": temp=$temperature"
+      } else {
+        say "ERROR: Temperature reading not avaialable"
+      }
     }
   }
 }
