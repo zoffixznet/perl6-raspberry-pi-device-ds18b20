@@ -33,6 +33,31 @@ SYNOPSIS
       }
     }
 
+Or, for use in an asynchronous environment:
+
+    use RPi::Device::DS18B20;
+
+    MAIN: {
+      my $ds18b20 = RPi::Device::DS18B20.new();
+    
+      my ($sensor) = $ds18b20.detect-sensors();
+    
+      # Create a live Supply from the sensor that reads a new temperature every
+      # 1.5 seconds.
+      my $supply = $sensor.interval(1.5);
+    
+      # Read the temperature from the supply in an asychronous react loop.
+      react {
+        whenever $supply -> $temperature {
+          if $temperature.defined {
+            say "Temperature: sensor id=" ~ $sensor.id ~ ": temp=$temperature"
+          } else {
+            say "ERROR: Temperature reading not avaialable"
+          }
+        }
+      }
+    }
+
 DESCRIPTION
 -----------
 
@@ -41,19 +66,6 @@ RPi::Device::DS18B20 provides access to the DS18B20 family of temperature sensor
 Adafruit has an excellent tutorial on getting the Raspberry Pi set up to use the DS18B20 sensors here:
 
   [https://www.adafruit.com/products/381](https://www.adafruit.com/products/381)
-
-CONSTRUCTOR
------------
-
-The RPi::Device::DS18B20 takes no parameters.  The constructor will check to see if the "/sys/bus/w1/device/" directory exists, and will throw an error if not. If your program is getting an exception during object construction, check to ensure that the 'w1-gpio' kernel module is loaded.
-
-METHODS
--------
-
-* method detect-sensors() returns Array - Returns an Array of RPi::Device::DS18B20::Sensor objects that were detected on the RPi.
-
-* method get-sensor(Str $id) returns RPi::Device::DS18B20::Sensor - Returns the RPi::Device::DS18B20::Sensor corresponding to the provided ID $id.  If a sensor with the provided id wasn't found, returns Nil.
-
 
 AUTHOR
 ------
