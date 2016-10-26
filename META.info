@@ -1,4 +1,5 @@
 {
+    "perl" : "6.*",
     "name" : "RPi::Device::DS18B20",
     "version" : "0.2.0",
     "description" : "RPi::Device::DS18B20 provides support for the DS18B20 family of temperature sensors.",
